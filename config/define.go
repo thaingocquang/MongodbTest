@@ -7,6 +7,11 @@ type Database struct {
 	TestName string
 }
 
+// Jwt ...
+type Jwt struct {
+	SecretKey string
+}
+
 // ENV ...
 type ENV struct {
 	// AppPort ...
@@ -14,4 +19,7 @@ type ENV struct {
 
 	// Database ...
 	Database Database
+
+	// Jwt
+	Jwt Jwt
 }

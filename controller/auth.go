@@ -9,7 +9,7 @@ import (
 
 // Register ...
 func Register(c echo.Context) error {
-	var registerBody = c.Get("registerBody").(model.PlayerRegister)
+	var registerBody = c.Get("playerRequestBody").(model.Player)
 
 	// process data
 	err := service.Register(registerBody)
@@ -21,4 +21,23 @@ func Register(c echo.Context) error {
 
 	// success
 	return util.Response200(c, nil, "")
+}
+
+// Login ...
+func Login(c echo.Context) error {
+	var loginBody = c.Get("playerRequestBody").(model.Player)
+
+	// process data
+	token, err := service.Login(loginBody)
+
+	if err != nil {
+		return util.Response400(c, nil, err.Error())
+	}
+
+	// token
+	data := map[string]interface{}{
+		"token": token,
+	}
+
+	return util.Response200(c, data, "")
 }

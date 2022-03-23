@@ -14,6 +14,7 @@ import (
 // db ...
 var db *mongo.Database
 
+// Connect ...
 func Connect() {
 	envVars := config.GetEnv()
 
@@ -42,6 +43,7 @@ func Connect() {
 	fmt.Println("Database Connected to", envVars.Database.Name)
 }
 
+// SetDB ...
 func SetDB(dbValue *mongo.Database) {
 	db = dbValue
 }

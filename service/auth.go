@@ -3,13 +3,15 @@ package service
 import (
 	"MongodbTest/dao"
 	"MongodbTest/model"
+	"MongodbTest/util"
 	"errors"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 )
 
-func Register(registerBody model.PlayerRegister) error {
+// Register ...
+func Register(registerBody model.Player) error {
 	// check email existed
 	isEmailExisted := dao.CheckPlayerEmailExisted(registerBody.Email)
 	if isEmailExisted {
@@ -23,21 +25,39 @@ func Register(registerBody model.PlayerRegister) error {
 		return err
 	}
 
-	playerRegisterBSON := model.PlayerRegisterBSON{
-		ID:             primitive.NewObjectID(),
-		Name:           registerBody.Name,
-		Email:          registerBody.Email,
-		HashedPassword: string(bytes),
-		CreatedAt:      time.Time{},
-		UpdatedAt:      time.Time{},
-	}
+	registerBody.ID = primitive.NewObjectID()
+	registerBody.Password = string(bytes)
+	registerBody.CreatedAt = time.Now()
+	registerBody.UpdatedAt = time.Now()
 
 	// create player
-	err = dao.PlayerCreate(playerRegisterBSON)
+	err = dao.PlayerCreate(registerBody)
 	if err != nil {
 		err := errors.New("can't create player")
 		return err
 	}
 
 	return err
+}
+
+// Login ...
+func Login(loginBody model.Player) (string, error) {
+	// find player in db
+	player, err := dao.PlayerFindByEmail(loginBody.Email)
+
+	if err != nil {
+		return "", err
+	}
+
+	// verify player password
+	if err := bcrypt.CompareHashAndPassword([]byte(player.Password), []byte(loginBody.Password)); err != nil {
+		return "", errors.New("wrong password")
+	}
+
+	data := map[string]interface{}{
+		"id": player.ID,
+	}
+
+	// return JWT token
+	return util.GenerateUserToken(data), err
 }

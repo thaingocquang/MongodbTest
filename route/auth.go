@@ -2,12 +2,13 @@ package route
 
 import (
 	"MongodbTest/controller"
-	"MongodbTest/validation"
+	"MongodbTest/middleware"
 	"github.com/labstack/echo/v4"
 )
 
+// auth ...
 func auth(e *echo.Echo) {
 	players := e.Group("/auth")
-	players.POST("/register", controller.Register, validation.RegisterBody)
-	players.POST("/login", nil)
+	players.POST("/register", controller.Register, middleware.ValidatePlayerRegisterBody)
+	players.POST("/login", controller.Login, middleware.ValidatePlayerLoginBody)
 }

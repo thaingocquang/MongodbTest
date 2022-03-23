@@ -21,6 +21,7 @@ func InitDotEnv() {
 	rootPath := projectName.Find([]byte(currentWorkDirectory))
 	envPath := string(rootPath) + `/.env`
 
+	// load env
 	if err := godotenv.Load(envPath); err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -31,9 +32,13 @@ func InitDotEnv() {
 	// appPort ...
 	appPort := GetEnvString("APP_PORT")
 
+	// Jwt
+	jwt := Jwt{SecretKey: GetEnvString("SECRET_KEY")}
+
 	env = ENV{
 		Database: database,
 		AppPort:  appPort,
+		Jwt:      jwt,
 	}
 
 }
