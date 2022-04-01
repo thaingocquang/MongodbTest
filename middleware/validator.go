@@ -116,7 +116,7 @@ func ValidatePlayerUpdateBody(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-//
+// ValidateCreateBotBody ...
 func ValidateCreateBotBody(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var bot model.Bot
@@ -134,6 +134,7 @@ func ValidateCreateBotBody(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
+// ValidateID ...
 func ValidateID(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var (

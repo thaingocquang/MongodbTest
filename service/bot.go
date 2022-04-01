@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// CreateBot ...
 func CreateBot(bot model.Bot) error {
 	// check exist name
 
@@ -25,6 +26,7 @@ func CreateBot(bot model.Bot) error {
 	return err
 }
 
+// GetBotByID ...
 func GetBotByID(botID string) (model.Bot, error) {
 	objID, _ := primitive.ObjectIDFromHex(botID)
 

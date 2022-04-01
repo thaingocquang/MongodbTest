@@ -1,39 +1,26 @@
 package controller
 
 import (
-	"MongodbTest/config"
 	"MongodbTest/model"
 	"MongodbTest/service"
 	"MongodbTest/util"
-	"fmt"
-	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
 
+// MyProfile ...
 func MyProfile(c echo.Context) error {
-	user := c.Get("user").(*jwt.Token)
-
-	claims := &util.JwtCustomClaims{}
-	_, err := jwt.ParseWithClaims(user.Raw, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.GetEnv().Jwt.SecretKey), nil
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(claims.Data["id"])
+	// jwtPayload for get id
+	jwtPayload, _ := util.GetJWTPayload(c)
 
 	// Process data
-	doc, err := service.MyProfile(claims.Data["id"].(string))
-
-	//// Process data
-	//doc, err := service.MyProfile(claims["ID"].(string))
+	doc, err := service.MyProfile(jwtPayload["id"].(string))
 
 	// if err
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
 
+	// response data
 	data := map[string]interface{}{
 		"name":  doc.Name,
 		"email": doc.Email,
@@ -45,32 +32,19 @@ func MyProfile(c echo.Context) error {
 
 // UpdateMyProfile ...
 func UpdateMyProfile(c echo.Context) error {
-	//// get player id
-	//user := c.Get("user").(*jwt.Token)
-	//claims := user.Claims.(jwt.MapClaims)
-	//ID := claims["ID"].(string)
-
-	user := c.Get("user").(*jwt.Token)
-
-	claims := &util.JwtCustomClaims{}
-	_, err := jwt.ParseWithClaims(user.Raw, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.GetEnv().Jwt.SecretKey), nil
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	ID := claims.Data["id"].(string)
-
 	var playerUpdateBody = c.Get("playerRequestBody").(model.Player)
 
+	// jwtPayload for get id
+	jwtPayload, _ := util.GetJWTPayload(c)
+	id := jwtPayload["id"].(string)
+
 	// UpdateProfile
-	err = service.UpdateProfile(ID, playerUpdateBody)
+	err := service.UpdateProfile(id, playerUpdateBody)
 
 	// if err
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
 
-	return util.Response200(c, ID, "")
+	return util.Response200(c, id, "")
 }

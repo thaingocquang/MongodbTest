@@ -15,4 +15,7 @@ func player(e *echo.Echo) {
 	players := e.Group("/players", middleware.JWT([]byte(envVars.Jwt.SecretKey)))
 	players.GET("/me", controller.MyProfile)
 	players.PUT("/me", controller.UpdateMyProfile, customMiddleware.ValidatePlayerUpdateBody)
+	players.DELETE("", nil)
+	players.GET("/id", nil)
+	players.GET("", nil, customMiddleware.CheckAdminRole)
 }

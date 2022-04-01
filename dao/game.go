@@ -6,6 +6,7 @@ import (
 	"context"
 )
 
+// RecordGame ...
 func RecordGame(game model.Game) error {
 	var (
 		gameCol = database.GameCol()

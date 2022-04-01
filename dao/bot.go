@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// CreateBot ...
 func CreateBot(bot model.Bot) error {
 	var (
 		botCol = database.BotCol()
@@ -20,6 +21,7 @@ func CreateBot(bot model.Bot) error {
 	return err
 }
 
+// GetBotByID ...
 func GetBotByID(botID primitive.ObjectID) (model.Bot, error) {
 	var (
 		botCol = database.BotCol()
@@ -29,8 +31,8 @@ func GetBotByID(botID primitive.ObjectID) (model.Bot, error) {
 
 	filter := bson.M{"_id": botID}
 
+	// FindOne
 	err := botCol.FindOne(ctx, filter).Decode(&bot)
-
 	if err != nil {
 		return bot, err
 	}
@@ -39,6 +41,7 @@ func GetBotByID(botID primitive.ObjectID) (model.Bot, error) {
 
 }
 
+// GetBotByName ...
 func GetBotByName(botName string) (model.Bot, error) {
 	var (
 		botCol = database.BotCol()
@@ -48,16 +51,16 @@ func GetBotByName(botName string) (model.Bot, error) {
 
 	filter := bson.M{"name": botName}
 
+	// FindOne
 	err := botCol.FindOne(ctx, filter).Decode(&bot)
-
 	if err != nil {
 		return bot, err
 	}
 
 	return bot, nil
-
 }
 
+// UpdateBotByID ...
 func UpdateBotByID(id string, bot model.Bot) error {
 	var (
 		botCol = database.BotCol()
@@ -66,6 +69,7 @@ func UpdateBotByID(id string, bot model.Bot) error {
 
 	objID, _ := primitive.ObjectIDFromHex(id)
 
+	// UpdateOne
 	_, err := botCol.UpdateOne(ctx, bson.M{"_id": objID}, bson.M{"$set": bot})
 	if err != nil {
 		return err
@@ -74,12 +78,14 @@ func UpdateBotByID(id string, bot model.Bot) error {
 	return nil
 }
 
+// UpdateBotByName ...
 func UpdateBotByName(name string, bot model.Bot) error {
 	var (
 		botCol = database.BotCol()
 		ctx    = context.Background()
 	)
 
+	// UpdateOne
 	_, err := botCol.UpdateOne(ctx, bson.M{"name": name}, bson.M{"$set": bot})
 	if err != nil {
 		return err

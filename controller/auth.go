@@ -43,6 +43,7 @@ func Login(c echo.Context) error {
 	return util.Response200(c, data, "")
 }
 
+// AdminLogin ...
 func AdminLogin(c echo.Context) error {
 	var admin model.Admin
 
@@ -64,6 +65,4 @@ func AdminLogin(c echo.Context) error {
 	}
 
 	return util.Response200(c, data, "")
-
-	return nil
 }

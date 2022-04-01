@@ -132,6 +132,7 @@ type UpdateMyProfile struct {
 	e *echo.Echo
 }
 
+// SetupSuite ...
 func (suite *UpdateMyProfile) SetupSuite() {
 	suite.e = test_helper.InitServer()
 
@@ -170,6 +171,7 @@ func (suite *UpdateMyProfile) TestUpdateMyProfile_Success() {
 	assert.NotEqual(suite.T(), nil, response["data"])
 }
 
+// TestPlayer ...
 func TestPlayer(t *testing.T) {
 	suite.Run(t, new(MyProfileSuite))
 	suite.Run(t, new(UpdateMyProfile))

@@ -9,8 +9,9 @@ import (
 
 // bot ...
 func bot(e *echo.Echo) {
-	players := e.Group("/bot", middleware.JWT([]byte(envVars.Jwt.SecretKey)), customMiddleware.CheckAdminRole)
-	players.POST("/", controller.CreateBot, customMiddleware.ValidateCreateBotBody)
+	players := e.Group("/bots", middleware.JWT([]byte(envVars.Jwt.SecretKey)), customMiddleware.CheckAdminRole)
+	players.POST("", controller.CreateBot, customMiddleware.ValidateCreateBotBody)
 	players.GET("/:id", controller.GetBotByID, customMiddleware.ValidateID)
-	players.PUT("/", controller.AdminLogin)
+	players.GET("", nil, customMiddleware.CheckAdminRole)
+	players.PUT("", nil, customMiddleware.CheckAdminRole)
 }

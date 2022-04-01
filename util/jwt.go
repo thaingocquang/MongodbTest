@@ -41,6 +41,7 @@ func GenerateUserToken(data map[string]interface{}) string {
 	return st
 }
 
+// GetJWTPayload ...
 func GetJWTPayload(c echo.Context) (map[string]interface{}, error) {
 	// get jwt object from context
 	user := c.Get("user").(*jwt.Token)

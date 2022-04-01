@@ -6,6 +6,7 @@ import (
 )
 
 type (
+	// Game ...
 	Game struct {
 		ID         primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 		GameNo     int                `json:"gameNo,omitempty" bson:"gameNo,omitempty"`
@@ -19,6 +20,7 @@ type (
 		UpdatedAt  time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
 	}
 
+	// GameBody ...
 	GameBody struct {
 		BotName  string `json:"botName"`
 		BetValue int    `json:"betValue"`

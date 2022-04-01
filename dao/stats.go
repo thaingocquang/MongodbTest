@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// UpdateStatsByPlayerID ...
 func UpdateStatsByPlayerID(id string, stats model.Stats) error {
 	var (
 		statsCol = database.StatsCol()
@@ -17,6 +18,7 @@ func UpdateStatsByPlayerID(id string, stats model.Stats) error {
 
 	objID, _ := primitive.ObjectIDFromHex(id)
 
+	// UpdateOne
 	_, err := statsCol.UpdateOne(ctx, bson.M{"_id": objID}, bson.M{"$set": stats})
 	if err != nil {
 		return err
@@ -25,6 +27,7 @@ func UpdateStatsByPlayerID(id string, stats model.Stats) error {
 	return nil
 }
 
+// GetStatsByPlayerID ...
 func GetStatsByPlayerID(id string) (model.Stats, error) {
 	var (
 		statsCol = database.StatsCol()

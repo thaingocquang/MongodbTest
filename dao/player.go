@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// PlayerFindByEmail ...
 func PlayerFindByEmail(email string) (model.Player, error) {
 	var (
 		playerCol    = database.PlayerCol()
@@ -27,6 +28,7 @@ func PlayerFindByEmail(email string) (model.Player, error) {
 	return playerDetail, nil
 }
 
+// PlayerProfileFindByID ...
 func PlayerProfileFindByID(ID string) (model.Player, error) {
 	var (
 		playerCol = database.PlayerCol()
@@ -49,6 +51,7 @@ func PlayerProfileFindByID(ID string) (model.Player, error) {
 	return profile, nil
 }
 
+// UpdatePlayerProfile ...
 func UpdatePlayerProfile(ID string, newProfile model.Player) error {
 	var (
 		playerCol = database.PlayerCol()
@@ -57,15 +60,9 @@ func UpdatePlayerProfile(ID string, newProfile model.Player) error {
 	)
 
 	objID, _ := primitive.ObjectIDFromHex(ID)
-
-	//update := bson.M{"name": profile.Name, "email": profile.Email}
-
 	update := model.Player{Name: newProfile.Name, Email: newProfile.Email, Password: newProfile.Password}
 
-	//update := bson.M{"name": newProfile.Name, "email": newProfile.Email, "password": newProfile.Password}
-
-	//res, err := playerCol.UpdateOne(ctx, bson.M{"_id": objID}, bson.M{"$set": update})
-
+	// UpdateOne
 	_, err := playerCol.UpdateOne(ctx, bson.M{"_id": objID}, bson.M{"$set": update})
 
 	if err != nil {

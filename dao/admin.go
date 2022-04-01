@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+// AdminFindByUsername ...
 func AdminFindByUsername(username string) (model.Admin, error) {
 	var (
 		adminCol = database.AdminCol()

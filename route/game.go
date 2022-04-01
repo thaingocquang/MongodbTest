@@ -10,5 +10,5 @@ import (
 // game ...
 func game(e *echo.Echo) {
 	game := e.Group("/games", middleware.JWT([]byte(envVars.Jwt.SecretKey)))
-	game.POST("/", controller.Play, customMiddleware.ValidateGameValue)
+	game.POST("", controller.Play, customMiddleware.ValidateGameValue)
 }

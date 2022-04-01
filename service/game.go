@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// Play ...
 func Play(gameBody model.GameBody, playerID string) error {
 	// empty deck card
 	var deckCard model.DeckCard
