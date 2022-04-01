@@ -3,13 +3,14 @@ package util
 import (
 	"MongodbTest/config"
 	"github.com/golang-jwt/jwt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/labstack/echo/v4"
 	"time"
 )
 
-// jwtCustomClaims ...
-type jwtCustomClaims struct {
-	ID string
+// JwtCustomClaims ...
+type JwtCustomClaims struct {
+	//ID string
+	Data map[string]interface{}
 	jwt.StandardClaims
 }
 
@@ -18,8 +19,9 @@ var envVars = config.GetEnv()
 // GenerateUserToken ...
 func GenerateUserToken(data map[string]interface{}) string {
 	// claims ...
-	claims := &jwtCustomClaims{
-		data["id"].(primitive.ObjectID).Hex(),
+	claims := &JwtCustomClaims{
+		//data["id"].(primitive.ObjectID).Hex(),
+		data,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * 15).Unix(),
 		},
@@ -37,4 +39,23 @@ func GenerateUserToken(data map[string]interface{}) string {
 	}
 
 	return st
+}
+
+func GetJWTPayload(c echo.Context) (map[string]interface{}, error) {
+	// get jwt object from context
+	user := c.Get("user").(*jwt.Token)
+
+	claims := &JwtCustomClaims{}
+
+	// ParseWithClaims
+	_, err := jwt.ParseWithClaims(user.Raw, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(config.GetEnv().Jwt.SecretKey), nil
+	})
+
+	// if err
+	if err != nil {
+		return nil, err
+	}
+
+	return claims.Data, nil
 }

@@ -16,6 +16,11 @@ import (
 	"time"
 )
 
+var (
+	PlayerIDString = "5f24d45125ea51bc57a8285a"
+	PlayerObjID, _ = primitive.ObjectIDFromHex(PlayerIDString)
+)
+
 // CreateFakePlayer ...
 func CreateFakePlayer() {
 	bytes, _ := bcrypt.GenerateFromPassword([]byte("123456"), 14)
@@ -23,8 +28,9 @@ func CreateFakePlayer() {
 		playerCol  = database.PlayerCol()
 		ctx        = context.Background()
 		fakePlayer = model.Player{
-			ID:   primitive.NewObjectID(),
-			Name: "fake", Email: "fake@gmail.com",
+			ID:        PlayerObjID,
+			Name:      "fake",
+			Email:     "fake@gmail.com",
 			Password:  string(bytes),
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),

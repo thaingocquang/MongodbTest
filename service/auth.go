@@ -61,3 +61,26 @@ func Login(loginBody model.Player) (string, error) {
 	// return JWT token
 	return util.GenerateUserToken(data), err
 }
+
+// AdminLogin ...
+func AdminLogin(loginBody model.Admin) (string, error) {
+	// find admin in db
+	admin, err := dao.AdminFindByUsername(loginBody.Username)
+
+	if err != nil {
+		return "", err
+	}
+
+	// verify admin password
+	if admin.Password != loginBody.Password {
+		return "", errors.New("wrong password")
+	}
+
+	data := map[string]interface{}{
+		"id":      admin.ID,
+		"isAdmin": true,
+	}
+
+	// return JWT token
+	return util.GenerateUserToken(data), err
+}

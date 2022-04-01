@@ -25,7 +25,7 @@ func (suite *RegisterSuite) SetupSuite() {
 }
 
 // TestRegisterSuccess ...
-func (suite *RegisterSuite) TestRegisterSuccess() {
+func (suite *RegisterSuite) TestRegister_Success() {
 	var (
 		registerBody = model.Player{
 			Name:     "quang",
@@ -49,7 +49,7 @@ func (suite *RegisterSuite) TestRegisterSuccess() {
 }
 
 // TestEmailRequired ...
-func (suite *RegisterSuite) TestRegisterEmailRequired() {
+func (suite *RegisterSuite) TestRegister_Fail_EmailRequired() {
 	var (
 		registerBody = model.Player{
 			Name:     "quang",
@@ -73,7 +73,7 @@ func (suite *RegisterSuite) TestRegisterEmailRequired() {
 }
 
 // TestEmailMissingAtSign ...
-func (suite *RegisterSuite) TestRegisterEmailMissingAtSign() {
+func (suite *RegisterSuite) TestRegister_Fail_EmailMissingAtSign() {
 	var (
 		registerBody = model.Player{
 			Name:     "quang",
@@ -97,7 +97,7 @@ func (suite *RegisterSuite) TestRegisterEmailMissingAtSign() {
 }
 
 // TestPasswordRequired ...
-func (suite *RegisterSuite) TestRegisterPasswordRequired() {
+func (suite *RegisterSuite) TestRegister_Fail_PasswordRequired() {
 	var (
 		registerBody = model.Player{
 			Name:     "quang",
@@ -120,7 +120,7 @@ func (suite *RegisterSuite) TestRegisterPasswordRequired() {
 	assert.Equal(suite.T(), nil, response["data"])
 }
 
-func (suite *RegisterSuite) TestRegisterPasswordAtLeast8Chars() {
+func (suite *RegisterSuite) TestRegister_Fail_PasswordAtLeast8Chars() {
 	if testing.Short() {
 		suite.T().Skip()
 	}

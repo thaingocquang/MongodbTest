@@ -30,6 +30,7 @@ func Login(c echo.Context) error {
 	// process data
 	token, err := service.Login(loginBody)
 
+	// if error
 	if err != nil {
 		return util.Response400(c, nil, err.Error())
 	}
@@ -40,4 +41,29 @@ func Login(c echo.Context) error {
 	}
 
 	return util.Response200(c, data, "")
+}
+
+func AdminLogin(c echo.Context) error {
+	var admin model.Admin
+
+	// bind request body
+	c.Bind(&admin)
+
+	// process data
+	token, err := service.AdminLogin(admin)
+
+	// if error
+	if err != nil {
+		return util.Response400(c, nil, err.Error())
+	}
+
+	// token
+	data := map[string]interface{}{
+		"token":   token,
+		"isAdmin": true,
+	}
+
+	return util.Response200(c, data, "")
+
+	return nil
 }
