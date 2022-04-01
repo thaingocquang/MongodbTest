@@ -3,7 +3,7 @@ A RESTful API example for simple card poker game with Go
 
 ## API
 
-#### /auth/register `POST` : Register player
+#### /auth/register `POST` : Player register 
 
 #### /auth/login `POST` : Player login
 
@@ -13,7 +13,7 @@ A RESTful API example for simple card poker game with Go
 * `POST` : Create bot (admin)
 * `PUT` : Update bot (admin)
 
-#### /bots/configs `POST` : Reset bot point when low point
+#### /bots/configs `PUT` : Reset bot point when low point
 
 #### /bots/:id `GET` : Get bot by id (admin)
 
@@ -24,18 +24,16 @@ A RESTful API example for simple card poker game with Go
 * `GET` : Get recent games
 
 #### /players/me
-* `GET` : Update my profile
-* `PUT` : Get my profile
+* `PUT` : Update my profile
+* `GET` : Get my profile & statistic
 
 #### /players/password `PATCH` : update player password
 
-#### /players
-* `DELETE` : Delete player (admin)
-* `GET` : Get all player (admin)
+#### /players `DELETE` : Delete player (admin)
 
 #### /players/:id `GET` : Get player by ID (admin)
 
-#### / players/page=&per_page= `GET` : Get all player, 10 player per page (admin)
+#### /players/page=&per_page= `GET` : Get all player, 10 players per page (admin)
 
 ## Structure
 ```
