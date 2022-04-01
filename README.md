@@ -1,4 +1,5 @@
 ## Go Card Poker Game REST API Example
+A RESTful API example for simple card poker game with Go
 
 ## Structure
 ```
@@ -66,3 +67,22 @@
 └── main.go
 ```
 
+## API
+
+#### /auth/register `POST` : Register player
+
+#### /auth/login `POST` : Player login
+
+#### /auth/admin-login `POST` : Admin login
+
+#### /bot/
+* `POST` : Create bot
+* `PUT` : Update bot
+
+#### /bot/:id `GET` : Get bot by id
+
+#### /games/ `POST` : Play game
+
+#### /players/me
+* `GET` : Update my profile
+* `PUT` : Get my profile
