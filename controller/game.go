@@ -4,18 +4,15 @@ import (
 	"MongodbTest/model"
 	"MongodbTest/service"
 	"MongodbTest/util"
-	"fmt"
 	"github.com/labstack/echo/v4"
 )
 
 // Play ...
 func Play(c echo.Context) error {
-
-	fmt.Println("HELLO")
-
 	// get game value from context (bot id, bet value)
 	var gameBody = c.Get("game").(model.GameBody)
 	var botID = c.Get("strID").(string)
+
 	// jwtPayload for get id
 	jwtPayload, _ := util.GetJWTPayload(c)
 

@@ -74,22 +74,6 @@ func UpdateBotByID(id primitive.ObjectID, bot model.Bot) error {
 	return nil
 }
 
-// UpdateBotByName ...
-func UpdateBotByName(name string, bot model.Bot) error {
-	var (
-		botCol = database.BotCol()
-		ctx    = context.Background()
-	)
-
-	// UpdateOne
-	_, err := botCol.UpdateOne(ctx, bson.M{"name": name}, bson.M{"$set": bot})
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func GetListBot() []model.Bot {
 	var (
 		botCol = database.BotCol()
