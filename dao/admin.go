@@ -5,6 +5,7 @@ import (
 	"MongodbTest/module/database"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // AdminFindByUsername ...
@@ -25,4 +26,22 @@ func AdminFindByUsername(username string) (model.Admin, error) {
 	}
 
 	return admin, nil
+}
+
+func InitAdminUser() {
+	var (
+		adminCol = database.AdminCol()
+		ctx      = context.Background()
+	)
+
+	count, _ := adminCol.CountDocuments(ctx, bson.D{})
+
+	if count == 0 {
+		admin := model.Admin{
+			ID:       primitive.NewObjectID(),
+			Username: "admin",
+			Password: "123456",
+		}
+		adminCol.InsertOne(ctx, admin)
+	}
 }

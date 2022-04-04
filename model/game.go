@@ -22,7 +22,6 @@ type (
 
 	// GameBody ...
 	GameBody struct {
-		BotName  string `json:"botName"`
-		BetValue int    `json:"betValue"`
+		BetValue int `json:"betValue"`
 	}
 )

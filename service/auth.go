@@ -11,12 +11,11 @@ import (
 )
 
 // Register ...
-func Register(registerBody model.Player) error {
+func Register(registerBody model.PlayerRegisterBody) error {
 	// check email existed
 	isEmailExisted := dao.CheckPlayerEmailExisted(registerBody.Email)
 	if isEmailExisted {
-		err := errors.New("email already existed")
-		return err
+		return errors.New("email already existed")
 	}
 
 	// hash player password
@@ -25,32 +24,52 @@ func Register(registerBody model.Player) error {
 		return err
 	}
 
-	registerBody.ID = primitive.NewObjectID()
-	registerBody.Password = string(bytes)
-	registerBody.CreatedAt = time.Now()
-	registerBody.UpdatedAt = time.Now()
+	// player objectID
+	objID := primitive.NewObjectID()
+
+	// playerRegisterBSON
+	playerRegisterBSON := model.Player{
+		ID:        objID,
+		Name:      registerBody.Name,
+		Email:     registerBody.Email,
+		Password:  string(bytes),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
 
 	// create player
-	err = dao.PlayerCreate(registerBody)
-	if err != nil {
-		err := errors.New("can't create player")
-		return err
+	if err := dao.PlayerCreate(playerRegisterBSON); err != nil {
+		return errors.New("can't create player")
+	}
+
+	// Create empty player stats
+	playerStats := model.StatsCreate{
+		ID:        primitive.NewObjectID(),
+		PlayerID:  objID,
+		Point:     0,
+		TotalGame: 0,
+		WinGame:   0,
+		WinRate:   0,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	if err := dao.CreatePlayerStats(playerStats); err != nil {
+		return errors.New("can't create player stats")
 	}
 
 	return err
 }
 
 // Login ...
-func Login(loginBody model.Player) (string, error) {
+func Login(playerLoginBody model.PlayerLoginBody) (string, error) {
 	// find player in db
-	player, err := dao.PlayerFindByEmail(loginBody.Email)
-
+	player, err := dao.PlayerFindByEmail(playerLoginBody.Email)
 	if err != nil {
 		return "", err
 	}
 
 	// verify player password
-	if err := bcrypt.CompareHashAndPassword([]byte(player.Password), []byte(loginBody.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(player.Password), []byte(playerLoginBody.Password)); err != nil {
 		return "", errors.New("wrong password")
 	}
 
@@ -63,7 +82,7 @@ func Login(loginBody model.Player) (string, error) {
 }
 
 // AdminLogin ...
-func AdminLogin(loginBody model.Admin) (string, error) {
+func AdminLogin(loginBody model.AdminLoginBody) (string, error) {
 	// find admin in db
 	admin, err := dao.AdminFindByUsername(loginBody.Username)
 

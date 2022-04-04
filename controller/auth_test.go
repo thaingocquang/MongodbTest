@@ -22,6 +22,7 @@ type RegisterSuite struct {
 // SetupSuite ...
 func (suite *RegisterSuite) SetupSuite() {
 	suite.e = test_helper.InitServer()
+
 }
 
 // TestRegisterSuccess ...
@@ -126,19 +127,19 @@ func (suite *RegisterSuite) TestRegister_Fail_PasswordAtLeast8Chars() {
 	}
 }
 
-func (suite *RegisterSuite) TestRegisterPasswordMaximum256Chars() {
+func (suite *RegisterSuite) TestRegister_Fail_PasswordMaximum256Chars() {
 	if testing.Short() {
 		suite.T().Skip()
 	}
 }
 
-func (suite *RegisterSuite) TestRegisterPasswordWithoutNumber() {
+func (suite *RegisterSuite) TestRegister_Fail_PasswordWithoutNumber() {
 	if testing.Short() {
 		suite.T().Skip()
 	}
 }
 
-func (suite *RegisterSuite) TestRegisterPasswordSpecialChar() {
+func (suite *RegisterSuite) TestRegister_Fail_PasswordSpecialChar() {
 	if testing.Short() {
 		suite.T().Skip()
 	}

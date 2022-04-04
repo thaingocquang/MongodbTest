@@ -6,6 +6,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	options2 "go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // PlayerFindByEmail ...
@@ -99,4 +100,63 @@ func PlayerCreate(doc model.Player) error {
 	_, err := playerCol.InsertOne(ctx, doc)
 
 	return err
+}
+
+// DeletePlayer ...
+func DeletePlayer(ID primitive.ObjectID) error {
+	var (
+		playerCol = database.PlayerCol()
+		ctx       = context.Background()
+	)
+
+	if _, err := playerCol.DeleteOne(ctx, bson.D{{"_id", ID}}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetPlayerByID(ID primitive.ObjectID) model.Player {
+	var (
+		playerCol = database.PlayerCol()
+		ctx       = context.Background()
+		player    model.Player
+	)
+
+	filter := bson.M{"_id": ID}
+
+	// FindOne
+	if err := playerCol.FindOne(ctx, filter).Decode(&player); err != nil {
+		return model.Player{}
+	}
+
+	return player
+}
+
+func GetListPlayer(page, limit int) []model.Player {
+	var (
+		playerCol = database.PlayerCol()
+		ctx       = context.Background()
+		players   []model.Player
+	)
+
+	options := new(options2.FindOptions)
+	if limit != 0 {
+		if page == 0 {
+			page = 1
+		}
+		options.SetSkip(int64((page - 1) * limit))
+		options.SetLimit(int64(limit))
+	}
+
+	cursor, err := playerCol.Find(ctx, bson.D{}, options)
+	if err != nil {
+		return nil
+	}
+
+	if err = cursor.All(ctx, &players); err != nil {
+		return nil
+	}
+
+	return players
 }

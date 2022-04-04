@@ -32,13 +32,11 @@ func GetBotByID(botID primitive.ObjectID) (model.Bot, error) {
 	filter := bson.M{"_id": botID}
 
 	// FindOne
-	err := botCol.FindOne(ctx, filter).Decode(&bot)
-	if err != nil {
+	if err := botCol.FindOne(ctx, filter).Decode(&bot); err != nil {
 		return bot, err
 	}
 
 	return bot, nil
-
 }
 
 // GetBotByName ...
@@ -61,16 +59,14 @@ func GetBotByName(botName string) (model.Bot, error) {
 }
 
 // UpdateBotByID ...
-func UpdateBotByID(id string, bot model.Bot) error {
+func UpdateBotByID(id primitive.ObjectID, bot model.Bot) error {
 	var (
 		botCol = database.BotCol()
 		ctx    = context.Background()
 	)
 
-	objID, _ := primitive.ObjectIDFromHex(id)
-
 	// UpdateOne
-	_, err := botCol.UpdateOne(ctx, bson.M{"_id": objID}, bson.M{"$set": bot})
+	_, err := botCol.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": bot})
 	if err != nil {
 		return err
 	}
@@ -92,4 +88,23 @@ func UpdateBotByName(name string, bot model.Bot) error {
 	}
 
 	return nil
+}
+
+func GetListBot() []model.Bot {
+	var (
+		botCol = database.BotCol()
+		ctx    = context.Background()
+		bots   []model.Bot
+	)
+
+	cursor, err := botCol.Find(ctx, bson.D{})
+	if err != nil {
+		return nil
+	}
+
+	if err = cursor.All(ctx, &bots); err != nil {
+		return nil
+	}
+
+	return bots
 }

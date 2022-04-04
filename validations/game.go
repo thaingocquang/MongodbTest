@@ -1,4 +1,4 @@
-package middleware
+package validations
 
 import (
 	"MongodbTest/model"

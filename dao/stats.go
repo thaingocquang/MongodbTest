@@ -4,41 +4,38 @@ import (
 	"MongodbTest/model"
 	"MongodbTest/module/database"
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // UpdateStatsByPlayerID ...
-func UpdateStatsByPlayerID(id string, stats model.Stats) error {
+func UpdateStatsByPlayerID(id primitive.ObjectID, stats model.Stats) error {
 	var (
 		statsCol = database.StatsCol()
 		ctx      = context.Background()
-		//profile   model.Player
 	)
 
-	objID, _ := primitive.ObjectIDFromHex(id)
-
 	// UpdateOne
-	_, err := statsCol.UpdateOne(ctx, bson.M{"_id": objID}, bson.M{"$set": stats})
+	u, err := statsCol.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": stats})
 	if err != nil {
 		return err
 	}
+
+	fmt.Println("UPDATED: ", u.MatchedCount)
 
 	return nil
 }
 
 // GetStatsByPlayerID ...
-func GetStatsByPlayerID(id string) (model.Stats, error) {
+func GetStatsByPlayerID(id primitive.ObjectID) (model.Stats, error) {
 	var (
 		statsCol = database.StatsCol()
 		ctx      = context.Background()
 		stats    model.Stats
 	)
 
-	// objectID
-	objID, _ := primitive.ObjectIDFromHex(id)
-
-	filter := bson.M{"playerID": objID}
+	filter := bson.M{"playerID": id}
 	err := statsCol.FindOne(ctx, filter).Decode(&stats)
 
 	// if err
@@ -48,4 +45,17 @@ func GetStatsByPlayerID(id string) (model.Stats, error) {
 
 	return stats, nil
 
+}
+
+// CreatePlayerStats ...
+func CreatePlayerStats(stats model.StatsCreate) error {
+	var (
+		statsCol = database.StatsCol()
+		ctx      = context.Background()
+	)
+
+	// InsertOne
+	_, err := statsCol.InsertOne(ctx, stats)
+
+	return err
 }

@@ -17,4 +17,16 @@ type (
 		CreatedAt time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
 		UpdatedAt time.Time          `json:"updated_at,omitempty" bson:"updated_at,omitempty"`
 	}
+
+	// StatsCreate ...
+	StatsCreate struct {
+		ID        primitive.ObjectID `bson:"_id"`
+		PlayerID  primitive.ObjectID `bson:"playerID"`
+		Point     int                `bson:"point"`
+		TotalGame int                `bson:"totalGame"`
+		WinGame   int                `bson:"winGame"`
+		WinRate   float32            `bson:"winRate"`
+		CreatedAt time.Time          `bson:"created_at"`
+		UpdatedAt time.Time          `bson:"updated_at"`
+	}
 )

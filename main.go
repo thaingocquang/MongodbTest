@@ -2,6 +2,7 @@ package main
 
 import (
 	"MongodbTest/config"
+	"MongodbTest/dao"
 	"MongodbTest/module/database"
 	"MongodbTest/route"
 	"github.com/labstack/echo/v4"
@@ -11,6 +12,7 @@ import (
 func init() {
 	config.Init()
 	database.Connect()
+	dao.InitAdminUser()
 }
 
 func main() {

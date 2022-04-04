@@ -10,7 +10,7 @@ import (
 )
 
 // Play ...
-func Play(gameBody model.GameBody, playerID string) error {
+func Play(gameBody model.GameBody, playerID string, botID string) (model.Game, error) {
 	// empty deck card
 	var deckCard model.DeckCard
 
@@ -29,69 +29,94 @@ func Play(gameBody model.GameBody, playerID string) error {
 	botHand.InitMaxCard()
 	playerHand.InitMaxCard()
 
+	// to objectId
+	playerObjID, _ := primitive.ObjectIDFromHex(playerID)
+	botObjID, _ := primitive.ObjectIDFromHex(botID)
+
 	// get bot by name
-	bot, err := dao.GetBotByName(gameBody.BotName)
+	bot, err := dao.GetBotByID(botObjID)
 	if err != nil {
-		return errors.New("get bot by name error")
+		return model.Game{}, errors.New("get bot by name error")
 	}
+
+	fmt.Println(bot)
+
+	// get player stats
+	stats, err := dao.GetStatsByPlayerID(playerObjID)
+	if err != nil {
+		return model.Game{}, errors.New("get player stats error")
+	}
+
+	fmt.Println(stats)
 
 	// compare hand
 	if botHand.CompareHandIsHigher(playerHand) {
 		// add bot point
-		updateBot := model.Bot{RemainPoints: bot.RemainPoints + gameBody.BetValue}
-		err := dao.UpdateBotByName(bot.Name, updateBot)
-		if err != nil {
-			return errors.New("update bot failed")
-		}
-		// minus player point
-		stats, err := dao.GetStatsByPlayerID(playerID)
-		if err != nil {
-			return errors.New("get stats failed")
+		botRemainPoint := bot.RemainPoints + gameBody.BetValue
+		if botRemainPoint > bot.TotalPoints {
+			bot.RemainPoints = bot.TotalPoints
+		} else {
+			bot.RemainPoints = botRemainPoint
 		}
 
-		updateStats := model.Stats{Point: stats.Point - gameBody.BetValue}
-		err = dao.UpdateStatsByPlayerID(playerID, updateStats)
-		if err != nil {
-			return errors.New("update stats failed")
+		// minus player point
+		playerPoint := stats.Point - gameBody.BetValue
+		if playerPoint < 0 {
+			stats.Point = 0
+		} else {
+			stats.Point = playerPoint
 		}
+
+		fmt.Println("BOT WIN!!")
 
 	} else {
+		// minus bot point
+		botRemainPoint := bot.RemainPoints - gameBody.BetValue
+		//if botRemainPoint > bot.TotalPoints {
+		if botRemainPoint < 0 {
+			bot.RemainPoints = 0
+		} else {
+			bot.RemainPoints = botRemainPoint
+		}
+
+		stats.Point += gameBody.BetValue
+
+		fmt.Println("PLAYER WIN!!")
+
+	}
+
+	fmt.Println("AFTER")
+	fmt.Println(bot)
+	fmt.Println(stats)
+
+	err = dao.UpdateStatsByPlayerID(playerObjID, stats)
+	if err != nil {
+		return model.Game{}, errors.New("update stats failed")
+	}
+
+	err = dao.UpdateBotByID(botObjID, bot)
+	if err != nil {
+		return model.Game{}, errors.New("update stats failed")
 	}
 
 	// init game
-	var game model.Game
-
-	game.ID = primitive.NewObjectID()
-	game.GameNo = 1
-	objID, _ := primitive.ObjectIDFromHex(playerID)
-	game.PlayerID = objID
-	game.BotID = bot.ID
-	// winner ID
-	game.WinnerID = bot.ID
-	game.PlayerHand.Cards = deckCard[0:3]
-	game.BotHand.Cards = deckCard[3:6]
-	game.BetValue = gameBody.BetValue
-	game.CreatedAt = time.Now()
-	game.UpdatedAt = time.Now()
-
-	if game.BotHand.CompareHandIsHigher(game.PlayerHand) {
-		fmt.Println("BOT win!!")
-	} else {
-		fmt.Println("PLAYER win!!")
+	game := model.Game{
+		ID:         primitive.NewObjectID(),
+		GameNo:     dao.CountAllGame(),
+		PlayerID:   playerObjID,
+		BotID:      botObjID,
+		WinnerID:   botObjID,
+		PlayerHand: playerHand,
+		BotHand:    botHand,
+		BetValue:   gameBody.BetValue,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
 	}
-
-	fmt.Println("BOT hand:", game.BotHand, " + SUM rank:", game.BotHand.SumRank())
-	fmt.Println("PLAYER hand:", game.PlayerHand, " + SUM rank:", game.PlayerHand.SumRank())
 
 	err = dao.RecordGame(game)
 	if err != nil {
-		return errors.New("record game failed")
+		return model.Game{}, errors.New("record game failed")
 	}
-	// deal card
 
-	// minus point if who win
-
-	// record (point)
-
-	return err
+	return game, err
 }

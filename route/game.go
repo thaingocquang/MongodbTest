@@ -2,7 +2,7 @@ package route
 
 import (
 	"MongodbTest/controller"
-	customMiddleware "MongodbTest/middleware"
+	"MongodbTest/validations"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -10,5 +10,5 @@ import (
 // game ...
 func game(e *echo.Echo) {
 	game := e.Group("/games", middleware.JWT([]byte(envVars.Jwt.SecretKey)))
-	game.POST("", controller.Play, customMiddleware.ValidateGameValue)
+	game.POST("/:id", controller.Play, validations.ValidateID, validations.ValidateGameValue)
 }
