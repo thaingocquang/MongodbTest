@@ -18,6 +18,8 @@ func (suite *GamePlaySuite) GamePlay_Success() {
 	}
 }
 
+// ...
+
 // TestAuth ...
 func TestGame(t *testing.T) {
 	suite.Run(t, new(GamePlaySuite))

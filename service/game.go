@@ -82,12 +82,7 @@ func Play(gameBody model.GameBody, playerID string, botID string) (model.Game, e
 		stats.Point += gameBody.BetValue
 
 		fmt.Println("PLAYER WIN!!")
-
 	}
-
-	fmt.Println("AFTER")
-	fmt.Println(bot)
-	fmt.Println(stats)
 
 	err = dao.UpdateStatsByPlayerID(playerObjID, stats)
 	if err != nil {
